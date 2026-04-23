@@ -2,8 +2,8 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>NEBULA EXCHANGE — крипто биржа в стиле Binance</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>NEBULA EXCHANGE — крипто биржа</title>
     <style>
         * {
             margin: 0;
@@ -14,8 +14,9 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             background: #0B0E11;
-            color: #EAECEF;
+            color: #FFFFFF;
             overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
         }
 
         /* ========== АНИМИРОВАННЫЙ ЗВЁЗДНЫЙ ФОН ========== */
@@ -63,22 +64,22 @@
         }
         .login-card {
             text-align: center;
-            padding: 48px 40px;
+            padding: 40px 24px;
             background: #1E2329;
             border-radius: 20px;
             border: 1px solid #2B3139;
-            max-width: 420px;
-            width: 90%;
+            max-width: 360px;
+            width: 85%;
             box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
         }
         .galaxy-logo {
-            width: 100px;
-            height: 100px;
-            margin: 0 auto 24px;
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
         }
         .galaxy-logo svg { width: 100%; height: 100%; }
         .login-card h1 {
-            font-size: 32px;
+            font-size: 28px;
             font-weight: 600;
             background: linear-gradient(135deg, #F0B90B, #FCD535);
             -webkit-background-clip: text;
@@ -88,24 +89,26 @@
         }
         .login-card .subtitle {
             color: #848E9C;
-            font-size: 14px;
-            margin-bottom: 32px;
+            font-size: 13px;
+            margin-bottom: 28px;
         }
         .login-card input {
             width: 100%;
             padding: 14px 16px;
             background: #2B3139;
             border: 1px solid #474D57;
-            color: #EAECEF;
+            color: #FFFFFF;
             font-size: 16px;
-            border-radius: 8px;
+            border-radius: 12px;
             margin-bottom: 20px;
             outline: none;
-            transition: all 0.2s;
         }
         .login-card input:focus {
             border-color: #F0B90B;
             box-shadow: 0 0 0 2px rgba(240, 185, 11, 0.2);
+        }
+        .login-card input::placeholder {
+            color: #848E9C;
         }
         .login-card button {
             width: 100%;
@@ -115,25 +118,25 @@
             color: #0B0E11;
             font-size: 16px;
             font-weight: 600;
-            border-radius: 8px;
+            border-radius: 12px;
             cursor: pointer;
-            transition: all 0.2s;
         }
         .login-card button:hover {
             background: #FCD535;
         }
         .make-token-text {
-            margin-top: 24px;
-            font-size: 12px;
+            margin-top: 20px;
+            font-size: 11px;
             color: #848E9C;
         }
 
-        /* ========== ОСНОВНОЙ ИНТЕРФЕЙС БИРЖИ (BINANCE СТИЛЬ) ========== */
+        /* ========== ОСНОВНОЙ ИНТЕРФЕЙС ========== */
         .exchange-interface {
             display: none;
             position: relative;
             z-index: 1;
             min-height: 100vh;
+            padding-bottom: 20px;
         }
         .exchange-interface.active {
             display: block;
@@ -143,12 +146,10 @@
         .binance-header {
             background: #0B0E11;
             border-bottom: 1px solid #2B3139;
-            padding: 12px 24px;
+            padding: 12px 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 16px;
             position: sticky;
             top: 0;
             z-index: 100;
@@ -156,14 +157,14 @@
         .logo-area {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
         .logo-icon {
-            width: 32px;
-            height: 32px;
+            width: 28px;
+            height: 28px;
         }
         .logo-text {
-            font-size: 20px;
+            font-size: 16px;
             font-weight: 700;
             background: linear-gradient(135deg, #F0B90B, #FCD535);
             -webkit-background-clip: text;
@@ -173,14 +174,14 @@
         .user-info {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 10px;
             background: #1E2329;
-            padding: 8px 16px;
+            padding: 6px 14px;
             border-radius: 30px;
         }
         .user-avatar {
-            width: 32px;
-            height: 32px;
+            width: 28px;
+            height: 28px;
             background: #F0B90B;
             border-radius: 50%;
             display: flex;
@@ -188,37 +189,39 @@
             justify-content: center;
             color: #0B0E11;
             font-weight: bold;
+            font-size: 14px;
         }
         .user-name {
             color: #F0B90B;
             font-weight: 500;
+            font-size: 13px;
         }
 
-        /* Основной контент */
+        /* Основной контент — мобильная колонка */
         .binance-main {
-            display: grid;
-            grid-template-columns: 1fr 380px;
-            gap: 0;
-            max-width: 1600px;
-            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            padding: 12px;
+            gap: 16px;
         }
 
-        /* Левая колонка - списoк токенов */
+        /* ЛИСТ ТОКЕНОВ */
         .token-list-section {
-            border-right: 1px solid #2B3139;
-            min-height: calc(100vh - 60px);
+            background: #13161A;
+            border-radius: 16px;
+            overflow: hidden;
         }
         .section-header {
-            padding: 20px 24px;
+            padding: 14px 16px;
             border-bottom: 1px solid #2B3139;
         }
         .section-header h2 {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 600;
             color: #F0B90B;
         }
         .section-header p {
-            font-size: 13px;
+            font-size: 12px;
             color: #848E9C;
             margin-top: 4px;
         }
@@ -227,21 +230,20 @@
         }
         .token-table-header {
             display: grid;
-            grid-template-columns: 80px 1fr 120px 120px 100px;
-            padding: 12px 24px;
-            background: #13161A;
+            grid-template-columns: 40px 1fr 80px 70px 70px;
+            padding: 10px 16px;
+            background: #0B0E11;
             color: #848E9C;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 500;
             border-bottom: 1px solid #2B3139;
         }
         .token-row {
             display: grid;
-            grid-template-columns: 80px 1fr 120px 120px 100px;
-            padding: 16px 24px;
+            grid-template-columns: 40px 1fr 80px 70px 70px;
+            padding: 12px 16px;
             border-bottom: 1px solid #2B3139;
             cursor: pointer;
-            transition: background 0.2s;
             align-items: center;
         }
         .token-row:hover {
@@ -249,138 +251,126 @@
         }
         .token-rank {
             color: #848E9C;
-            font-size: 14px;
+            font-size: 13px;
         }
         .token-info {
             display: flex;
-            align-items: center;
-            gap: 12px;
+            flex-direction: column;
         }
         .token-symbol {
             font-weight: 600;
             color: #F0B90B;
+            font-size: 14px;
         }
         .token-name {
-            font-size: 12px;
+            font-size: 10px;
             color: #848E9C;
         }
         .token-price {
             font-weight: 500;
+            color: #FFFFFF;
+            font-size: 13px;
         }
         .token-change {
-            font-size: 14px;
+            font-size: 12px;
         }
         .token-change.positive { color: #0ECB81; }
         .token-change.negative { color: #F6465D; }
-        .token-volume {
-            color: #848E9C;
-            font-size: 13px;
-        }
         .trade-btn {
             background: #F0B90B;
             border: none;
-            padding: 6px 12px;
-            border-radius: 6px;
+            padding: 6px 10px;
+            border-radius: 8px;
             color: #0B0E11;
             font-weight: 600;
             cursor: pointer;
-            font-size: 12px;
-        }
-        .trade-btn:hover {
-            background: #FCD535;
+            font-size: 11px;
+            width: 100%;
         }
 
-        /* Правая колонка - кошелёк и торговля */
+        /* ПРАВАЯ КОЛОНКА — карточки */
         .right-panel {
-            padding: 20px;
-            background: #0B0E11;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
         }
-        .wallet-card {
+        .wallet-card, .trade-card, .create-token-card {
             background: #1E2329;
             border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 24px;
+            padding: 16px;
         }
-        .wallet-title {
+        .wallet-title, .trade-title {
             font-size: 16px;
             font-weight: 600;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
             color: #F0B90B;
         }
         .balance-item {
             display: flex;
             justify-content: space-between;
-            padding: 10px 0;
+            padding: 8px 0;
             border-bottom: 1px solid #2B3139;
         }
         .balance-asset {
             font-weight: 500;
+            color: #FFFFFF;
         }
         .balance-amount {
             color: #F0B90B;
         }
-        .trade-card {
-            background: #1E2329;
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 24px;
-        }
-        .trade-title {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 16px;
-        }
-        .create-token-card {
-            background: #1E2329;
-            border-radius: 16px;
-            padding: 20px;
-        }
-        .create-token-card input, .trade-card input, .trade-card select {
+        input, select {
             width: 100%;
-            padding: 10px 12px;
+            padding: 12px;
             background: #2B3139;
             border: 1px solid #474D57;
-            color: #EAECEF;
-            border-radius: 8px;
+            color: #FFFFFF;
+            border-radius: 12px;
             margin-bottom: 12px;
             outline: none;
+            font-size: 14px;
         }
-        .create-token-card input:focus, .trade-card input:focus {
-            border-color: #F0B90B;
+        input::placeholder {
+            color: #848E9C;
+        }
+        select {
+            color: #FFFFFF;
+        }
+        select option {
+            background: #2B3139;
+            color: #FFFFFF;
         }
         .btn-gold {
             background: #F0B90B;
             border: none;
             padding: 12px;
-            border-radius: 8px;
+            border-radius: 12px;
             color: #0B0E11;
             font-weight: 600;
             width: 100%;
             cursor: pointer;
-        }
-        .btn-gold:hover {
-            background: #FCD535;
+            font-size: 14px;
         }
         .order-book {
-            max-height: 300px;
+            max-height: 250px;
             overflow-y: auto;
         }
         .order-row {
             display: flex;
             justify-content: space-between;
             padding: 6px 0;
-            font-size: 13px;
+            font-size: 12px;
+            color: #FFFFFF;
         }
         .order-buy { color: #0ECB81; }
         .order-sell { color: #F6465D; }
         hr {
             border-color: #2B3139;
-            margin: 16px 0;
+            margin: 12px 0;
         }
-
-        @media (max-width: 1000px) {
-            .binance-main { grid-template-columns: 1fr; }
-            .token-list-section { border-right: none; }
+        .no-tokens {
+            padding: 40px;
+            text-align: center;
+            color: #848E9C;
         }
     </style>
 </head>
@@ -418,7 +408,7 @@
     <div class="binance-header">
         <div class="logo-area">
             <div class="logo-icon">
-                <svg width="32" height="32" viewBox="0 0 100 100">
+                <svg width="28" height="28" viewBox="0 0 100 100">
                     <path d="M50 8 Q72 28 50 50 Q28 72 50 92" stroke="#F0B90B" stroke-width="1.5" fill="none">
                         <animateTransform attributeName="transform" type="rotate" from="0 50 50" to="360 50 50" dur="10s" repeatCount="indefinite"/>
                     </path>
@@ -434,58 +424,58 @@
     </div>
 
     <div class="binance-main">
-        <!-- ЛЕВАЯ КОЛОНКА: ЛИСТ ТОКЕНОВ -->
+        <!-- ЛИСТ ТОКЕНОВ -->
         <div class="token-list-section">
             <div class="section-header">
                 <h2>📊 РЫНОК ТОКЕНОВ</h2>
-                <p>Все созданные токены | Объём за 24ч</p>
+                <p>Все созданные токены</p>
             </div>
             <div class="token-table">
                 <div class="token-table-header">
                     <span>#</span>
                     <span>Токен</span>
-                    <span>Цена (USDT)</span>
+                    <span>Цена</span>
                     <span>24ч %</span>
-                    <span>Торговать</span>
+                    <span></span>
                 </div>
                 <div id="tokenListContainer"></div>
             </div>
         </div>
 
-        <!-- ПРАВАЯ КОЛОНКА: КОШЕЛЁК + ТОРГОВЛЯ -->
-        <div class="right-panel">
-            <div class="wallet-card">
-                <div class="wallet-title">💼 МОЙ КОШЕЛЕК</div>
-                <div id="walletBalances"></div>
-                <hr>
-                <input type="text" id="transferTo" placeholder="Кому отправить">
-                <input type="text" id="transferSymbol" placeholder="Актив (USDT или TOKEN_XXX)">
-                <input type="number" id="transferAmount" placeholder="Сумма">
-                <button class="btn-gold" id="transferBtn">ОТПРАВИТЬ</button>
-            </div>
+        <!-- КОШЕЛЁК -->
+        <div class="wallet-card">
+            <div class="wallet-title">💼 МОЙ КОШЕЛЕК</div>
+            <div id="walletBalances"></div>
+            <hr>
+            <input type="text" id="transferTo" placeholder="Кому отправить">
+            <input type="text" id="transferSymbol" placeholder="Актив (USDT или TOKEN_XXX)">
+            <input type="number" id="transferAmount" placeholder="Сумма">
+            <button class="btn-gold" id="transferBtn">ОТПРАВИТЬ</button>
+        </div>
 
-            <div class="trade-card">
-                <div class="trade-title">📈 СОЗДАТЬ ТОКЕН</div>
-                <input type="text" id="tokenName" placeholder="Название токена">
-                <input type="text" id="tokenSymbol" placeholder="Символ (3-5 букв)">
-                <input type="number" id="tokenSupply" placeholder="Эмиссия">
-                <button class="btn-gold" id="createTokenBtn">✨ СОЗДАТЬ ТОКЕН ✨</button>
-            </div>
+        <!-- СОЗДАНИЕ ТОКЕНА -->
+        <div class="trade-card">
+            <div class="trade-title">✨ СОЗДАТЬ ТОКЕН</div>
+            <input type="text" id="tokenName" placeholder="Название токена">
+            <input type="text" id="tokenSymbol" placeholder="Символ (3-5 букв)">
+            <input type="number" id="tokenSupply" placeholder="Эмиссия">
+            <button class="btn-gold" id="createTokenBtn">✨ СОЗДАТЬ ТОКЕН ✨</button>
+        </div>
 
-            <div class="trade-card">
-                <div class="trade-title">🔄 ТОРГОВЛЯ</div>
-                <select id="tradeSymbolSelect"></select>
-                <select id="orderType">
-                    <option value="buy">🟢 ПОКУПКА</option>
-                    <option value="sell">🔴 ПРОДАЖА</option>
-                </select>
-                <input type="number" id="orderPrice" placeholder="Цена в USDT">
-                <input type="number" id="orderAmount" placeholder="Количество">
-                <button class="btn-gold" id="placeOrderBtn">РАЗМЕСТИТЬ ОРДЕР</button>
-                <hr>
-                <div class="trade-title" style="font-size:14px; margin-top:12px;">📖 КНИГА ОРДЕРОВ</div>
-                <div id="orderBook" class="order-book"></div>
-            </div>
+        <!-- ТОРГОВЛЯ -->
+        <div class="trade-card">
+            <div class="trade-title">🔄 ТОРГОВЛЯ</div>
+            <select id="tradeSymbolSelect"></select>
+            <select id="orderType">
+                <option value="buy">🟢 ПОКУПКА</option>
+                <option value="sell">🔴 ПРОДАЖА</option>
+            </select>
+            <input type="number" id="orderPrice" placeholder="Цена в USDT">
+            <input type="number" id="orderAmount" placeholder="Количество">
+            <button class="btn-gold" id="placeOrderBtn">РАЗМЕСТИТЬ ОРДЕР</button>
+            <hr>
+            <div class="trade-title" style="font-size:14px; margin-top:8px;">📖 КНИГА ОРДЕРОВ</div>
+            <div id="orderBook" class="order-book"></div>
         </div>
     </div>
 </div>
@@ -496,7 +486,7 @@
         function generateStars(){
             const sf = document.getElementById('starfield');
             if(!sf) return;
-            for(let i=0;i<150;i++){
+            for(let i=0;i<100;i++){
                 let s = document.createElement('div');
                 s.classList.add('star');
                 s.style.width = (Math.random()*2+1)+'px';
@@ -539,15 +529,11 @@
             return state.wallets[name].balance[asset] || 0;
         }
 
-        // Генерация случайной цены для токена (на основе объёма торгов)
         function getTokenPrice(symbol){
             let orders = state.orders[symbol] || [];
             let sells = orders.filter(o => o.type === 'sell');
-            let buys = orders.filter(o => o.type === 'buy');
-            if(sells.length > 0 && sells[0].price) return sells.sort((a,b)=>a.price-b.price)[0].price;
-            if(buys.length > 0 && buys[0].price) return buys.sort((a,b)=>b.price-a.price)[0].price;
-            // дефолтная цена
-            return 0.5 + (Object.keys(state.tokens).indexOf(symbol) * 0.1);
+            if(sells.length > 0) return sells.sort((a,b)=>a.price-b.price)[0].price;
+            return 0.5;
         }
 
         function createToken(creator, name, symbol, supply){
@@ -636,25 +622,24 @@
 
         function getOrdersForDisplay(sym){
             let ord = state.orders[sym] || [];
-            let buys = ord.filter(o=>o.type==='buy').sort((a,b)=>b.price-a.price).slice(0,8);
-            let sells = ord.filter(o=>o.type==='sell').sort((a,b)=>a.price-b.price).slice(0,8);
+            let buys = ord.filter(o=>o.type==='buy').sort((a,b)=>b.price-a.price).slice(0,6);
+            let sells = ord.filter(o=>o.type==='sell').sort((a,b)=>a.price-b.price).slice(0,6);
             return { buys, sells };
         }
 
-        // ОТРИСОВКА ЛИСТА ТОКЕНОВ (Binance стиль)
         function renderTokenList(){
             let container = document.getElementById('tokenListContainer');
             if(!container) return;
             let tokens = Object.keys(state.tokens);
             if(tokens.length === 0){
-                container.innerHTML = '<div style="padding:40px;text-align:center;color:#848E9C;">✨ Создайте первый токен ✨</div>';
+                container.innerHTML = '<div class="no-tokens">✨ Создайте первый токен ✨</div>';
                 return;
             }
             container.innerHTML = '';
             tokens.forEach((sym, idx) => {
                 let token = state.tokens[sym];
                 let price = getTokenPrice(sym);
-                let change = (Math.random() * 20 - 10).toFixed(2); // демо-изменение
+                let change = (Math.random() * 20 - 10).toFixed(2);
                 let changeClass = parseFloat(change) >= 0 ? 'positive' : 'negative';
                 let changeSign = parseFloat(change) >= 0 ? `+${change}%` : `${change}%`;
                 let row = document.createElement('div');
@@ -662,18 +647,15 @@
                 row.innerHTML = `
                     <div class="token-rank">${idx+1}</div>
                     <div class="token-info">
-                        <div>
-                            <div class="token-symbol">${sym}</div>
-                            <div class="token-name">${token.name}</div>
-                        </div>
+                        <div class="token-symbol">${sym}</div>
+                        <div class="token-name">${token.name}</div>
                     </div>
-                    <div class="token-price">$${price.toFixed(6)}</div>
+                    <div class="token-price">$${price.toFixed(4)}</div>
                     <div class="token-change ${changeClass}">${changeSign}</div>
                     <div><button class="trade-btn" data-symbol="${sym}">Торговать</button></div>
                 `;
                 container.appendChild(row);
             });
-            // обработчики кнопок торговли
             document.querySelectorAll('.trade-btn').forEach(btn => {
                 btn.onclick = (e) => {
                     let sym = btn.getAttribute('data-symbol');
@@ -762,7 +744,6 @@
             }
         }
 
-        // АВТОВХОД
         let saved = localStorage.getItem('NebulaCurrentUser');
         if(saved && saved !== 'null' && saved !== 'undefined'){
             loadData();
@@ -832,4 +813,4 @@
     })();
 </script>
 </body>
-</html>
+    </html>
