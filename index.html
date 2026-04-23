@@ -2,17 +2,23 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEBULA EXCHANGE — создай свой токен</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>NEBULA EXCHANGE — крипто биржа в стиле Binance</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: 'Courier New', monospace;
-            background: #0a0c10;
-            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #0B0E11;
+            color: #EAECEF;
             overflow-x: hidden;
         }
-        /* Звёздный фон */
+
+        /* ========== АНИМИРОВАННЫЙ ЗВЁЗДНЫЙ ФОН ========== */
         .starfield {
             position: fixed;
             top: 0;
@@ -20,7 +26,8 @@
             width: 100%;
             height: 100%;
             z-index: 0;
-            background: radial-gradient(ellipse at center, #0a0c10 0%, #000000 100%);
+            background: radial-gradient(ellipse at center, #0B0E11 0%, #000000 100%);
+            pointer-events: none;
         }
         .star {
             position: absolute;
@@ -33,22 +40,21 @@
             50% { opacity: 1; transform: scale(1.2); }
             100% { opacity: 0.2; transform: scale(1); }
         }
-        .main-container { position: relative; z-index: 1; min-height: 100vh; }
-        
-        /* СТРАНИЦА ВХОДА */
+
+        /* ========== СТРАНИЦА ВХОДА ========== */
         .login-screen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(10, 12, 16, 0.98);
-            backdrop-filter: blur(8px);
-            z-index: 1000;
+            background: rgba(11, 14, 17, 0.98);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
             display: flex;
             justify-content: center;
             align-items: center;
-            transition: opacity 0.5s;
+            transition: opacity 0.5s ease;
         }
         .login-screen.hidden {
             opacity: 0;
@@ -57,185 +63,430 @@
         }
         .login-card {
             text-align: center;
-            padding: 40px;
-            background: rgba(17, 21, 30, 0.95);
-            border: 2px solid #00ffaa;
-            border-radius: 32px;
-            box-shadow: 0 0 60px rgba(0, 255, 170, 0.3);
-            max-width: 400px;
+            padding: 48px 40px;
+            background: #1E2329;
+            border-radius: 20px;
+            border: 1px solid #2B3139;
+            max-width: 420px;
             width: 90%;
-            animation: glow 2s infinite;
-        }
-        @keyframes glow {
-            0% { box-shadow: 0 0 20px rgba(0, 255, 170, 0.2); border-color: #00ffaa; }
-            50% { box-shadow: 0 0 50px rgba(0, 255, 170, 0.5); border-color: #88ffcc; }
-            100% { box-shadow: 0 0 20px rgba(0, 255, 170, 0.2); border-color: #00ffaa; }
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
         }
         .galaxy-logo {
-            width: 120px;
-            height: 120px;
-            margin: 0 auto 20px;
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 24px;
         }
-        .galaxy-logo svg { width: 100%; height: 100%; filter: drop-shadow(0 0 10px #00ffaa); }
-        .login-card h1 { color: #00ffaa; font-size: 32px; letter-spacing: 4px; margin-bottom: 8px; }
-        .login-card .subtitle { color: #88ffcc; font-size: 14px; margin-bottom: 30px; }
+        .galaxy-logo svg { width: 100%; height: 100%; }
+        .login-card h1 {
+            font-size: 32px;
+            font-weight: 600;
+            background: linear-gradient(135deg, #F0B90B, #FCD535);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 8px;
+        }
+        .login-card .subtitle {
+            color: #848E9C;
+            font-size: 14px;
+            margin-bottom: 32px;
+        }
         .login-card input {
             width: 100%;
-            padding: 14px;
-            background: #000;
-            border: 1px solid #00ffaa;
-            color: #00ffaa;
+            padding: 14px 16px;
+            background: #2B3139;
+            border: 1px solid #474D57;
+            color: #EAECEF;
             font-size: 16px;
-            border-radius: 12px;
+            border-radius: 8px;
             margin-bottom: 20px;
-            text-align: center;
+            outline: none;
+            transition: all 0.2s;
+        }
+        .login-card input:focus {
+            border-color: #F0B90B;
+            box-shadow: 0 0 0 2px rgba(240, 185, 11, 0.2);
         }
         .login-card button {
             width: 100%;
             padding: 14px;
-            background: #00ffaa20;
-            border: 1px solid #00ffaa;
-            color: #00ffaa;
-            font-size: 18px;
-            font-weight: bold;
-            border-radius: 12px;
+            background: #F0B90B;
+            border: none;
+            color: #0B0E11;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
             cursor: pointer;
+            transition: all 0.2s;
         }
-        .login-card button:hover { background: #00ffaa; color: #000; }
-        .make-token-text { margin-top: 24px; font-size: 12px; color: #00ffaa88; }
-        
-        /* ИНТЕРФЕЙС БИРЖИ */
-        .exchange-interface { display: none; padding: 20px; }
-        .exchange-interface.active { display: block; }
-        .terminal-header {
-            background: #000000aa;
-            padding: 10px 16px;
-            border-bottom: 2px solid #00ffaa;
-            margin-bottom: 24px;
+        .login-card button:hover {
+            background: #FCD535;
+        }
+        .make-token-text {
+            margin-top: 24px;
+            font-size: 12px;
+            color: #848E9C;
+        }
+
+        /* ========== ОСНОВНОЙ ИНТЕРФЕЙС БИРЖИ (BINANCE СТИЛЬ) ========== */
+        .exchange-interface {
+            display: none;
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+        }
+        .exchange-interface.active {
+            display: block;
+        }
+
+        /* Верхняя панель */
+        .binance-header {
+            background: #0B0E11;
+            border-bottom: 1px solid #2B3139;
+            padding: 12px 24px;
             display: flex;
             justify-content: space-between;
+            align-items: center;
             flex-wrap: wrap;
-            backdrop-filter: blur(4px);
+            gap: 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
-        .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; }
-        .wallet-panel, .token-panel, .trade-panel {
-            background: #11151ecc;
-            backdrop-filter: blur(8px);
-            border: 1px solid #2a3a4a;
-            border-radius: 12px;
-            padding: 18px;
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
-        h2, h3 { margin-top: 0; border-left: 4px solid #00ffaa; padding-left: 10px; }
-        button {
-            background: #1e2a36;
-            color: #00ffaa;
-            border: 1px solid #00ffaa;
-            padding: 8px 14px;
-            margin: 6px 4px;
-            cursor: pointer;
-            border-radius: 6px;
+        .logo-icon {
+            width: 32px;
+            height: 32px;
         }
-        input, select {
-            background: #000000cc;
-            color: #00ffaa;
-            border: 1px solid #2a6b6b;
-            padding: 8px;
-            margin: 6px 0;
+        .logo-text {
+            font-size: 20px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #F0B90B, #FCD535);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: #1E2329;
+            padding: 8px 16px;
+            border-radius: 30px;
+        }
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            background: #F0B90B;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0B0E11;
+            font-weight: bold;
+        }
+        .user-name {
+            color: #F0B90B;
+            font-weight: 500;
+        }
+
+        /* Основной контент */
+        .binance-main {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 0;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        /* Левая колонка - списoк токенов */
+        .token-list-section {
+            border-right: 1px solid #2B3139;
+            min-height: calc(100vh - 60px);
+        }
+        .section-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #2B3139;
+        }
+        .section-header h2 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #F0B90B;
+        }
+        .section-header p {
+            font-size: 13px;
+            color: #848E9C;
+            margin-top: 4px;
+        }
+        .token-table {
             width: 100%;
-            border-radius: 6px;
         }
-        ul { list-style: none; padding: 0; max-height: 200px; overflow-y: auto; }
-        li { border-bottom: 1px solid #2a3a4a; padding: 6px 4px; }
-        .order-book-entry { display: flex; justify-content: space-between; border-bottom: 1px solid #2a6b6b; padding: 6px 4px; }
-        .buy { color: #00cc88; }
-        .sell { color: #ff6680; }
-        .order-book-header { background: #1a2a2a; padding: 6px; margin-top: 8px; text-align: center; }
-        footer { margin-top: 40px; text-align: center; font-size: 0.7rem; opacity: 0.7; }
+        .token-table-header {
+            display: grid;
+            grid-template-columns: 80px 1fr 120px 120px 100px;
+            padding: 12px 24px;
+            background: #13161A;
+            color: #848E9C;
+            font-size: 12px;
+            font-weight: 500;
+            border-bottom: 1px solid #2B3139;
+        }
+        .token-row {
+            display: grid;
+            grid-template-columns: 80px 1fr 120px 120px 100px;
+            padding: 16px 24px;
+            border-bottom: 1px solid #2B3139;
+            cursor: pointer;
+            transition: background 0.2s;
+            align-items: center;
+        }
+        .token-row:hover {
+            background: #1E2329;
+        }
+        .token-rank {
+            color: #848E9C;
+            font-size: 14px;
+        }
+        .token-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .token-symbol {
+            font-weight: 600;
+            color: #F0B90B;
+        }
+        .token-name {
+            font-size: 12px;
+            color: #848E9C;
+        }
+        .token-price {
+            font-weight: 500;
+        }
+        .token-change {
+            font-size: 14px;
+        }
+        .token-change.positive { color: #0ECB81; }
+        .token-change.negative { color: #F6465D; }
+        .token-volume {
+            color: #848E9C;
+            font-size: 13px;
+        }
+        .trade-btn {
+            background: #F0B90B;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            color: #0B0E11;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .trade-btn:hover {
+            background: #FCD535;
+        }
+
+        /* Правая колонка - кошелёк и торговля */
+        .right-panel {
+            padding: 20px;
+            background: #0B0E11;
+        }
+        .wallet-card {
+            background: #1E2329;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+        .wallet-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #F0B90B;
+        }
+        .balance-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #2B3139;
+        }
+        .balance-asset {
+            font-weight: 500;
+        }
+        .balance-amount {
+            color: #F0B90B;
+        }
+        .trade-card {
+            background: #1E2329;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+        .trade-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .create-token-card {
+            background: #1E2329;
+            border-radius: 16px;
+            padding: 20px;
+        }
+        .create-token-card input, .trade-card input, .trade-card select {
+            width: 100%;
+            padding: 10px 12px;
+            background: #2B3139;
+            border: 1px solid #474D57;
+            color: #EAECEF;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            outline: none;
+        }
+        .create-token-card input:focus, .trade-card input:focus {
+            border-color: #F0B90B;
+        }
+        .btn-gold {
+            background: #F0B90B;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            color: #0B0E11;
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+        }
+        .btn-gold:hover {
+            background: #FCD535;
+        }
+        .order-book {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .order-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 13px;
+        }
+        .order-buy { color: #0ECB81; }
+        .order-sell { color: #F6465D; }
+        hr {
+            border-color: #2B3139;
+            margin: 16px 0;
+        }
+
+        @media (max-width: 1000px) {
+            .binance-main { grid-template-columns: 1fr; }
+            .token-list-section { border-right: none; }
+        }
     </style>
 </head>
 <body>
+
 <div class="starfield" id="starfield"></div>
-<div class="main-container">
-    <!-- СТРАНИЦА ВХОДА -->
-    <div class="login-screen" id="loginScreen">
-        <div class="login-card">
-            <div class="galaxy-logo">
-                <svg viewBox="0 0 100 100">
-                    <rect width="100" height="100" fill="#0a0c10" rx="20"/>
-                    <g>
-                        <animateTransform attributeName="transform" type="rotate" from="0 50 50" to="360 50 50" dur="15s" repeatCount="indefinite"/>
-                        <path d="M50 8 Q72 28 50 50 Q28 72 50 92" stroke="#00ffaa" stroke-width="1.2" fill="none"/>
-                    </g>
-                    <circle cx="50" cy="50" r="5" fill="#00ffaa">
-                        <animate attributeName="r" values="3;6;3" dur="1.5s" repeatCount="indefinite"/>
-                    </circle>
-                    <circle cx="25" cy="20" r="1.2" fill="white"><animate attributeName="opacity" values="0.3;1;0.3" dur="1.2s" repeatCount="indefinite"/></circle>
-                    <circle cx="75" cy="25" r="1" fill="white"><animate attributeName="opacity" values="0.5;1;0.5" dur="1.8s" repeatCount="indefinite"/></circle>
-                    <circle cx="30" cy="75" r="0.9" fill="white"><animate attributeName="opacity" values="0.4;0.9;0.4" dur="2s" repeatCount="indefinite"/></circle>
-                    <circle cx="70" cy="72" r="1.1" fill="white"><animate attributeName="opacity" values="0.6;1;0.6" dur="2.3s" repeatCount="indefinite"/></circle>
+
+<div class="login-screen" id="loginScreen">
+    <div class="login-card">
+        <div class="galaxy-logo">
+            <svg viewBox="0 0 100 100">
+                <rect width="100" height="100" fill="#1E2329" rx="20"/>
+                <g>
+                    <animateTransform attributeName="transform" type="rotate" from="0 50 50" to="360 50 50" dur="15s" repeatCount="indefinite"/>
+                    <path d="M50 8 Q72 28 50 50 Q28 72 50 92" stroke="#F0B90B" stroke-width="1.2" fill="none"/>
+                </g>
+                <circle cx="50" cy="50" r="5" fill="#F0B90B">
+                    <animate attributeName="r" values="3;6;3" dur="1.5s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="25" cy="20" r="1.2" fill="white"/>
+                <circle cx="75" cy="25" r="1" fill="white"/>
+                <circle cx="30" cy="75" r="0.9" fill="white"/>
+                <circle cx="70" cy="72" r="1.1" fill="white"/>
+            </svg>
+        </div>
+        <h1>NEBULA</h1>
+        <div class="subtitle">✦ создай свой токен ✦</div>
+        <input type="text" id="loginUsername" placeholder="Введите имя">
+        <button id="enterBtn">🚀 ВОЙТИ В NEBULA 🚀</button>
+        <div class="make-token-text">⚡ КАЖДЫЙ МОЖЕТ СОЗДАТЬ ТОКЕН ⚡</div>
+    </div>
+</div>
+
+<div class="exchange-interface" id="exchangeInterface">
+    <div class="binance-header">
+        <div class="logo-area">
+            <div class="logo-icon">
+                <svg width="32" height="32" viewBox="0 0 100 100">
+                    <path d="M50 8 Q72 28 50 50 Q28 72 50 92" stroke="#F0B90B" stroke-width="1.5" fill="none">
+                        <animateTransform attributeName="transform" type="rotate" from="0 50 50" to="360 50 50" dur="10s" repeatCount="indefinite"/>
+                    </path>
+                    <circle cx="50" cy="50" r="4" fill="#F0B90B"/>
                 </svg>
             </div>
-            <h1>NEBULA EXCHANGE</h1>
-            <div class="subtitle">✦ создай свой токен ✦</div>
-            <input type="text" id="loginUsername" placeholder="Введите имя">
-            <button id="enterBtn">🚀 ВОЙТИ 🚀</button>
-            <div class="make-token-text">⚡ КАЖДЫЙ МОЖЕТ СОЗДАТЬ ТОКЕН ⚡</div>
+            <span class="logo-text">NEBULA EXCHANGE</span>
+        </div>
+        <div class="user-info">
+            <div class="user-avatar" id="userAvatar">👤</div>
+            <span class="user-name" id="userNameDisplay"></span>
         </div>
     </div>
 
-    <!-- ИНТЕРФЕЙС БИРЖИ -->
-    <div class="exchange-interface" id="exchangeInterface">
-        <div class="terminal-header">
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <div style="width: 32px; height: 32px;">
-                    <svg width="32" height="32" viewBox="0 0 100 100">
-                        <rect width="100" height="100" fill="#0a0c10" rx="8"/>
-                        <path d="M50 8 Q72 28 50 50 Q28 72 50 92" stroke="#00ffaa" stroke-width="0.8" fill="none">
-                            <animateTransform attributeName="transform" type="rotate" from="0 50 50" to="360 50 50" dur="15s" repeatCount="indefinite"/>
-                        </path>
-                    </svg>
-                </div>
-                <span>✦ NEBULA EXCHANGE ✦</span>
+    <div class="binance-main">
+        <!-- ЛЕВАЯ КОЛОНКА: ЛИСТ ТОКЕНОВ -->
+        <div class="token-list-section">
+            <div class="section-header">
+                <h2>📊 РЫНОК ТОКЕНОВ</h2>
+                <p>Все созданные токены | Объём за 24ч</p>
             </div>
-            <span id="systemTime"></span>
+            <div class="token-table">
+                <div class="token-table-header">
+                    <span>#</span>
+                    <span>Токен</span>
+                    <span>Цена (USDT)</span>
+                    <span>24ч %</span>
+                    <span>Торговать</span>
+                </div>
+                <div id="tokenListContainer"></div>
+            </div>
         </div>
-        <div class="dashboard">
-            <div class="wallet-panel">
-                <h2>💼 КОШЕЛЕК</h2>
-                <h3>💰 Балансы</h3>
-                <ul id="balanceList"></ul>
+
+        <!-- ПРАВАЯ КОЛОНКА: КОШЕЛЁК + ТОРГОВЛЯ -->
+        <div class="right-panel">
+            <div class="wallet-card">
+                <div class="wallet-title">💼 МОЙ КОШЕЛЕК</div>
+                <div id="walletBalances"></div>
                 <hr>
-                <h3>🔄 Перевод</h3>
-                <input type="text" id="transferTo" placeholder="Кому">
+                <input type="text" id="transferTo" placeholder="Кому отправить">
                 <input type="text" id="transferSymbol" placeholder="Актив (USDT или TOKEN_XXX)">
                 <input type="number" id="transferAmount" placeholder="Сумма">
-                <button id="transferBtn">ОТПРАВИТЬ</button>
+                <button class="btn-gold" id="transferBtn">ОТПРАВИТЬ</button>
             </div>
-            <div class="token-panel">
-                <h2>⚡ СОЗДАТЬ ТОКЕН</h2>
-                <input type="text" id="tokenName" placeholder="Название">
+
+            <div class="trade-card">
+                <div class="trade-title">📈 СОЗДАТЬ ТОКЕН</div>
+                <input type="text" id="tokenName" placeholder="Название токена">
                 <input type="text" id="tokenSymbol" placeholder="Символ (3-5 букв)">
                 <input type="number" id="tokenSupply" placeholder="Эмиссия">
-                <button id="createTokenBtn">🚀 СОЗДАТЬ</button>
-                <hr>
-                <h3>📜 Список токенов</h3>
-                <div id="tokenList"></div>
+                <button class="btn-gold" id="createTokenBtn">✨ СОЗДАТЬ ТОКЕН ✨</button>
             </div>
-            <div class="trade-panel">
-                <h2>📊 ТОРГОВЛЯ</h2>
+
+            <div class="trade-card">
+                <div class="trade-title">🔄 ТОРГОВЛЯ</div>
                 <select id="tradeSymbolSelect"></select>
-                <div style="background:#0a0e14;padding:10px;border-radius:8px;margin:12px 0;">
-                    <h3>📌 Ордер</h3>
-                    <select id="orderType"><option value="buy">🟢 ПОКУПКА</option><option value="sell">🔴 ПРОДАЖА</option></select>
-                    <input type="number" id="orderPrice" placeholder="Цена в USDT">
-                    <input type="number" id="orderAmount" placeholder="Количество">
-                    <button id="placeOrderBtn">📢 РАЗМЕСТИТЬ</button>
-                </div>
-                <h3>📖 Книга ордеров</h3>
-                <div id="orderBook"></div>
+                <select id="orderType">
+                    <option value="buy">🟢 ПОКУПКА</option>
+                    <option value="sell">🔴 ПРОДАЖА</option>
+                </select>
+                <input type="number" id="orderPrice" placeholder="Цена в USDT">
+                <input type="number" id="orderAmount" placeholder="Количество">
+                <button class="btn-gold" id="placeOrderBtn">РАЗМЕСТИТЬ ОРДЕР</button>
+                <hr>
+                <div class="trade-title" style="font-size:14px; margin-top:12px;">📖 КНИГА ОРДЕРОВ</div>
+                <div id="orderBook" class="order-book"></div>
             </div>
         </div>
-        <footer>⚡ ФЕЙК-БИРЖА | ДАННЫЕ В ВАШЕМ БРАУЗЕРЕ ⚡</footer>
     </div>
 </div>
 
@@ -245,7 +496,7 @@
         function generateStars(){
             const sf = document.getElementById('starfield');
             if(!sf) return;
-            for(let i=0;i<200;i++){
+            for(let i=0;i<150;i++){
                 let s = document.createElement('div');
                 s.classList.add('star');
                 s.style.width = (Math.random()*2+1)+'px';
@@ -286,6 +537,17 @@
         function getBalance(name, asset){
             ensureWallet(name);
             return state.wallets[name].balance[asset] || 0;
+        }
+
+        // Генерация случайной цены для токена (на основе объёма торгов)
+        function getTokenPrice(symbol){
+            let orders = state.orders[symbol] || [];
+            let sells = orders.filter(o => o.type === 'sell');
+            let buys = orders.filter(o => o.type === 'buy');
+            if(sells.length > 0 && sells[0].price) return sells.sort((a,b)=>a.price-b.price)[0].price;
+            if(buys.length > 0 && buys[0].price) return buys.sort((a,b)=>b.price-a.price)[0].price;
+            // дефолтная цена
+            return 0.5 + (Object.keys(state.tokens).indexOf(symbol) * 0.1);
         }
 
         function createToken(creator, name, symbol, supply){
@@ -374,59 +636,84 @@
 
         function getOrdersForDisplay(sym){
             let ord = state.orders[sym] || [];
-            let buys = ord.filter(o=>o.type==='buy').sort((a,b)=>b.price-a.price).slice(0,10);
-            let sells = ord.filter(o=>o.type==='sell').sort((a,b)=>a.price-b.price).slice(0,10);
+            let buys = ord.filter(o=>o.type==='buy').sort((a,b)=>b.price-a.price).slice(0,8);
+            let sells = ord.filter(o=>o.type==='sell').sort((a,b)=>a.price-b.price).slice(0,8);
             return { buys, sells };
         }
 
-        // ОБНОВЛЕНИЕ ИНТЕРФЕЙСА
-        function updateUI(){
+        // ОТРИСОВКА ЛИСТА ТОКЕНОВ (Binance стиль)
+        function renderTokenList(){
+            let container = document.getElementById('tokenListContainer');
+            if(!container) return;
+            let tokens = Object.keys(state.tokens);
+            if(tokens.length === 0){
+                container.innerHTML = '<div style="padding:40px;text-align:center;color:#848E9C;">✨ Создайте первый токен ✨</div>';
+                return;
+            }
+            container.innerHTML = '';
+            tokens.forEach((sym, idx) => {
+                let token = state.tokens[sym];
+                let price = getTokenPrice(sym);
+                let change = (Math.random() * 20 - 10).toFixed(2); // демо-изменение
+                let changeClass = parseFloat(change) >= 0 ? 'positive' : 'negative';
+                let changeSign = parseFloat(change) >= 0 ? `+${change}%` : `${change}%`;
+                let row = document.createElement('div');
+                row.className = 'token-row';
+                row.innerHTML = `
+                    <div class="token-rank">${idx+1}</div>
+                    <div class="token-info">
+                        <div>
+                            <div class="token-symbol">${sym}</div>
+                            <div class="token-name">${token.name}</div>
+                        </div>
+                    </div>
+                    <div class="token-price">$${price.toFixed(6)}</div>
+                    <div class="token-change ${changeClass}">${changeSign}</div>
+                    <div><button class="trade-btn" data-symbol="${sym}">Торговать</button></div>
+                `;
+                container.appendChild(row);
+            });
+            // обработчики кнопок торговли
+            document.querySelectorAll('.trade-btn').forEach(btn => {
+                btn.onclick = (e) => {
+                    let sym = btn.getAttribute('data-symbol');
+                    let select = document.getElementById('tradeSymbolSelect');
+                    if(select && sym){
+                        select.value = sym;
+                        updateOrderBook();
+                    }
+                };
+            });
+        }
+
+        function updateWalletUI(){
             if(!currentUser) return;
             ensureWallet(currentUser);
-            // Балансы
-            let balList = document.getElementById('balanceList');
-            if(balList){
-                balList.innerHTML = '';
-                let b = state.wallets[currentUser].balance;
-                for(let a in b){
-                    let li = document.createElement('li');
-                    li.innerHTML = `<strong>${a}</strong> : ${b[a].toFixed(6)}`;
-                    balList.appendChild(li);
-                }
+            let container = document.getElementById('walletBalances');
+            if(!container) return;
+            container.innerHTML = '';
+            let b = state.wallets[currentUser].balance;
+            for(let a in b){
+                let div = document.createElement('div');
+                div.className = 'balance-item';
+                div.innerHTML = `<span class="balance-asset">${a}</span><span class="balance-amount">${b[a].toFixed(6)}</span>`;
+                container.appendChild(div);
             }
-            // Список токенов
-            let tokenDiv = document.getElementById('tokenList');
-            if(tokenDiv){
-                tokenDiv.innerHTML = '';
-                for(let s in state.tokens){
-                    let t = state.tokens[s];
-                    let div = document.createElement('div');
-                    div.style.background = '#0f131a';
-                    div.style.margin = '6px 0';
-                    div.style.padding = '8px';
-                    div.style.borderRadius = '8px';
-                    div.style.borderLeft = '3px solid #00ffaa';
-                    div.innerHTML = `<b>${t.name}</b> [${t.symbol}]<br>📦 ${t.totalSupply}<br>👤 ${t.creator}`;
-                    tokenDiv.appendChild(div);
-                }
-            }
-            // Селектор токенов
+        }
+
+        function updateTokenSelect(){
             let sel = document.getElementById('tradeSymbolSelect');
-            if(sel){
-                let old = sel.value;
-                sel.innerHTML = '';
-                for(let s in state.tokens){
-                    let opt = document.createElement('option');
-                    opt.value = s;
-                    opt.textContent = `${state.tokens[s].name} (${s})`;
-                    sel.appendChild(opt);
-                }
-                if(old && state.tokens[old]) sel.value = old;
-                updateOrderBook();
+            if(!sel) return;
+            let old = sel.value;
+            sel.innerHTML = '';
+            for(let s in state.tokens){
+                let opt = document.createElement('option');
+                opt.value = s;
+                opt.textContent = `${state.tokens[s].name} (${s})`;
+                sel.appendChild(opt);
             }
-            // Время
-            let timeSpan = document.getElementById('systemTime');
-            if(timeSpan) timeSpan.innerText = new Date().toLocaleTimeString();
+            if(old && state.tokens[old]) sel.value = old;
+            updateOrderBook();
         }
 
         function updateOrderBook(){
@@ -435,17 +722,28 @@
             let sym = sel.value;
             if(!sym || !state.tokens[sym]){
                 let book = document.getElementById('orderBook');
-                if(book) book.innerHTML = '<div>Выберите токен</div>';
+                if(book) book.innerHTML = '<div class="order-row">Выберите токен</div>';
                 return;
             }
             let { buys, sells } = getOrdersForDisplay(sym);
             let book = document.getElementById('orderBook');
-            book.innerHTML = '<div class="order-book-header">🔴 ПРОДАВЦЫ</div>';
-            if(sells.length===0) book.innerHTML += '<div>— нет —</div>';
-            sells.forEach(o=>{ book.innerHTML += `<div class="order-book-entry sell"><span>${o.amount.toFixed(4)}</span><span>${o.price.toFixed(6)} USDT</span><span>${o.user}</span></div>`; });
-            book.innerHTML += '<div class="order-book-header">🟢 ПОКУПАТЕЛИ</div>';
-            if(buys.length===0) book.innerHTML += '<div>— нет —</div>';
-            buys.forEach(o=>{ book.innerHTML += `<div class="order-book-entry buy"><span>${o.amount.toFixed(4)}</span><span>${o.price.toFixed(6)} USDT</span><span>${o.user}</span></div>`; });
+            book.innerHTML = '<div style="color:#F0B90B; margin-bottom:8px;">🔴 ПРОДАВЦЫ</div>';
+            if(sells.length===0) book.innerHTML += '<div class="order-row">— нет —</div>';
+            sells.forEach(o=>{
+                book.innerHTML += `<div class="order-row order-sell"><span>${o.user}</span><span>${o.amount.toFixed(2)}</span><span>${o.price.toFixed(4)} USDT</span></div>`;
+            });
+            book.innerHTML += '<div style="color:#F0B90B; margin:12px 0 8px;">🟢 ПОКУПАТЕЛИ</div>';
+            if(buys.length===0) book.innerHTML += '<div class="order-row">— нет —</div>';
+            buys.forEach(o=>{
+                book.innerHTML += `<div class="order-row order-buy"><span>${o.user}</span><span>${o.amount.toFixed(2)}</span><span>${o.price.toFixed(4)} USDT</span></div>`;
+            });
+        }
+
+        function updateAll(){
+            if(!currentUser) return;
+            updateWalletUI();
+            renderTokenList();
+            updateTokenSelect();
         }
 
         function showExchange(username){
@@ -454,15 +752,17 @@
             localStorage.setItem('NebulaCurrentUser', currentUser);
             document.getElementById('loginScreen').classList.add('hidden');
             document.getElementById('exchangeInterface').classList.add('active');
-            updateUI();
+            document.getElementById('userNameDisplay').innerText = currentUser;
+            document.getElementById('userAvatar').innerHTML = currentUser.charAt(0).toUpperCase();
+            updateAll();
             if(!window.matchInterval){
                 window.matchInterval = setInterval(()=>{
-                    if(currentUser){ matchAll(); updateUI(); }
+                    if(currentUser){ matchAll(); updateAll(); }
                 }, 3000);
             }
         }
 
-        // АВТОВХОД И ОБРАБОТЧИКИ
+        // АВТОВХОД
         let saved = localStorage.getItem('NebulaCurrentUser');
         if(saved && saved !== 'null' && saved !== 'undefined'){
             loadData();
@@ -471,81 +771,63 @@
             }
         }
 
-        // ЖДЁМ ЗАГРУЗКИ DOM
         window.addEventListener('DOMContentLoaded', function(){
-            // Вход
-            let enterBtn = document.getElementById('enterBtn');
-            if(enterBtn){
-                enterBtn.onclick = function(){
-                    let name = document.getElementById('loginUsername').value.trim();
-                    if(!name){ alert("Введите имя!"); return; }
-                    showExchange(name);
-                };
-            }
-            let usernameInput = document.getElementById('loginUsername');
-            if(usernameInput){
-                usernameInput.onkeypress = function(e){ if(e.key === 'Enter') document.getElementById('enterBtn').click(); };
-            }
-            // Создание токена
-            let createBtn = document.getElementById('createTokenBtn');
-            if(createBtn){
-                createBtn.onclick = function(){
-                    if(!currentUser){ alert("Сначала войдите"); return; }
-                    let name = document.getElementById('tokenName').value.trim();
-                    let sym = document.getElementById('tokenSymbol').value.trim();
-                    let supply = parseInt(document.getElementById('tokenSupply').value);
-                    if(!name || !sym || isNaN(supply)){ alert("Заполните все поля"); return; }
-                    let res = createToken(currentUser, name, sym, supply);
-                    if(res.error) alert(res.error);
-                    else{
-                        alert(`✅ Токен ${res.symbol} создан! Получено ${res.amount} шт.`);
-                        document.getElementById('tokenName').value = '';
-                        document.getElementById('tokenSymbol').value = '';
-                        document.getElementById('tokenSupply').value = '';
-                        updateUI();
-                    }
-                };
-            }
-            // Ордер
-            let orderBtn = document.getElementById('placeOrderBtn');
-            if(orderBtn){
-                orderBtn.onclick = function(){
-                    if(!currentUser){ alert("Сначала войдите"); return; }
-                    let sym = document.getElementById('tradeSymbolSelect').value;
-                    if(!state.tokens[sym]){ alert("Выберите токен"); return; }
-                    let type = document.getElementById('orderType').value;
-                    let price = parseFloat(document.getElementById('orderPrice').value);
-                    let amount = parseFloat(document.getElementById('orderAmount').value);
-                    if(isNaN(price) || isNaN(amount)){ alert("Введите цену и количество"); return; }
-                    let res = placeOrder(currentUser, sym, type, price, amount);
-                    if(res.error) alert(res.error);
-                    else{
-                        updateUI();
-                        document.getElementById('orderPrice').value = '';
-                        document.getElementById('orderAmount').value = '';
-                    }
-                };
-            }
-            // Перевод
-            let transferBtn = document.getElementById('transferBtn');
-            if(transferBtn){
-                transferBtn.onclick = function(){
-                    if(!currentUser){ alert("Сначала войдите"); return; }
-                    let to = document.getElementById('transferTo').value.trim();
-                    let asset = document.getElementById('transferSymbol').value.trim();
-                    let amt = parseFloat(document.getElementById('transferAmount').value);
-                    if(!to || !asset || isNaN(amt)){ alert("Заполните перевод"); return; }
-                    let res = transfer(currentUser, to, asset, amt);
-                    if(res.error) alert(res.error);
-                    else{
-                        updateUI();
-                        document.getElementById('transferAmount').value = '';
-                    }
-                };
-            }
-            // Смена токена в ордербуке
-            let tradeSelect = document.getElementById('tradeSymbolSelect');
-            if(tradeSelect) tradeSelect.onchange = updateOrderBook;
+            document.getElementById('enterBtn').onclick = () => {
+                let name = document.getElementById('loginUsername').value.trim();
+                if(!name){ alert("Введите имя!"); return; }
+                showExchange(name);
+            };
+            document.getElementById('loginUsername').onkeypress = (e) => { if(e.key === 'Enter') document.getElementById('enterBtn').click(); };
+            
+            document.getElementById('createTokenBtn').onclick = () => {
+                if(!currentUser){ alert("Сначала войдите"); return; }
+                let name = document.getElementById('tokenName').value.trim();
+                let sym = document.getElementById('tokenSymbol').value.trim();
+                let supply = parseInt(document.getElementById('tokenSupply').value);
+                if(!name || !sym || isNaN(supply)){ alert("Заполните все поля"); return; }
+                let res = createToken(currentUser, name, sym, supply);
+                if(res.error) alert(res.error);
+                else{
+                    alert(`✅ Токен ${res.symbol} создан! Получено ${res.amount} шт.`);
+                    document.getElementById('tokenName').value = '';
+                    document.getElementById('tokenSymbol').value = '';
+                    document.getElementById('tokenSupply').value = '';
+                    updateAll();
+                }
+            };
+            
+            document.getElementById('placeOrderBtn').onclick = () => {
+                if(!currentUser){ alert("Сначала войдите"); return; }
+                let sym = document.getElementById('tradeSymbolSelect').value;
+                if(!state.tokens[sym]){ alert("Выберите токен"); return; }
+                let type = document.getElementById('orderType').value;
+                let price = parseFloat(document.getElementById('orderPrice').value);
+                let amount = parseFloat(document.getElementById('orderAmount').value);
+                if(isNaN(price) || isNaN(amount)){ alert("Введите цену и количество"); return; }
+                let res = placeOrder(currentUser, sym, type, price, amount);
+                if(res.error) alert(res.error);
+                else{
+                    updateAll();
+                    document.getElementById('orderPrice').value = '';
+                    document.getElementById('orderAmount').value = '';
+                }
+            };
+            
+            document.getElementById('transferBtn').onclick = () => {
+                if(!currentUser){ alert("Сначала войдите"); return; }
+                let to = document.getElementById('transferTo').value.trim();
+                let asset = document.getElementById('transferSymbol').value.trim();
+                let amt = parseFloat(document.getElementById('transferAmount').value);
+                if(!to || !asset || isNaN(amt)){ alert("Заполните перевод"); return; }
+                let res = transfer(currentUser, to, asset, amt);
+                if(res.error) alert(res.error);
+                else{
+                    updateAll();
+                    document.getElementById('transferAmount').value = '';
+                }
+            };
+            
+            document.getElementById('tradeSymbolSelect').onchange = updateOrderBook;
         });
     })();
 </script>
